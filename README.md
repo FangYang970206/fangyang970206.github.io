@@ -33,26 +33,28 @@ description: 一句话摘要。
 这里是正文。
 ```
 
-`tags` 用英文逗号分隔。设置 `featured: true` 可以置顶。示例文章带有 `demo: true`；替换成自己的内容后删除该字段。文件名使用小写英文字母、数字和连字符，作为文章地址。
+`tags` 用英文逗号分隔。文件名使用小写英文字母、数字和连字符，作为文章地址。
 
 编辑 `site.config.json` 修改昵称、标题、简介、首页寄语（motto）、GitHub 链接、主题分类和站点地址。关于页文字在 `scripts/build.mjs` 中。
 
-## 发布到 GitHub Pages
+## 源码与发布
 
-目标用户名为 `fangyang970206`。推荐创建公开仓库 `fangyang970206.github.io`，然后把本项目文件提交到 `main` 分支。仓库根目录应包含 `package.json`、`content/`、`scripts/`、`public/` 和 `.github/workflows/pages.yml`。
+源码保存在私有仓库 `FangYang970206/fangyang970206.github.io`。当前网站通过 Sites 部署，沿用仅所有者可访问的权限。
 
-在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。提交到 `main` 后，工作流会自动构建和发布。成功后的个人主页地址为 https://fangyang970206.github.io/ 。这只是预期地址，须以 GitHub Actions 的部署成功结果为准。
+提交到 `main` 后，GitHub Actions 会安装依赖、构建并检查站内链接。当前账户方案不支持从此私有仓库启用 GitHub Pages，因此默认不运行 Pages 部署。
 
-工作流也兼容其他仓库名称，会从 `configure-pages` 获取实际域名和路径。使用其他域名时，同步更新 `site.config.json` 中的 `url`。
+如以后具备私有仓库的 Pages 权限，可先在仓库 Settings → Pages 中启用 GitHub Actions，再手动运行工作流并勾选 `deploy_pages`。部署成功后同步更新 `site.config.json` 中的 `url`。
 
-参考 [GitHub 官方部署说明](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。
+## 当前文章
+
+首篇文章为《多数据源图查询，先把联邦的边界看清楚》，整理自多数据源图查询报告和配套术语表。正文保留官方文档与论文链接，原始报告和聊天记录不随博客发布。
 
 ## 目录
 
 - `content/posts/`：Markdown 原文
 - `public/`：样式、交互和图标
 - `scripts/build.mjs`：生成文章、列表、标签、RSS、站点地图及搜索索引
-- `.github/workflows/pages.yml`：GitHub Pages 自动部署
+- `.github/workflows/pages.yml`：内容检查及可选的 Pages 手动部署
 - `.openai/hosting.json`：Sites 预览身份配置，GitHub Pages 不依赖它
 - `dist/`：构建输出，无需提交
 

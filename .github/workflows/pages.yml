@@ -1,8 +1,13 @@
-name: Publish blog to GitHub Pages
+name: Check blog and optionally deploy Pages
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      deploy_pages:
+        description: Deploy to Pages only when the repository plan supports it
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -19,14 +24,17 @@ jobs:
           cache: npm
       - uses: actions/configure-pages@v5
         id: pages
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy_pages
       - run: npm ci
       - run: npm run build && npm run check
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}${{ steps.pages.outputs.base_path }}
       - uses: actions/upload-pages-artifact@v4
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy_pages
         with:
           path: dist
   deploy:
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy_pages
     needs: build
     runs-on: ubuntu-latest
     permissions:
