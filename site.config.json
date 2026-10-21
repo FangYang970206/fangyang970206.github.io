@@ -4,5 +4,11 @@
   "description": "记录技术，整理思考，让知识慢慢生长。",
   "github": "https://github.com/FangYang970206",
   "url": "https://fangyang970206.github.io",
-  "topics": ["工程实践", "编程笔记", "工具与方法", "随笔"]
+  "topics": [
+    "工程实践",
+    "编程笔记",
+    "工具与方法",
+    "随笔"
+  ],
+  "motto": "保持好奇，认真记录。"
 }

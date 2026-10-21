@@ -1,6 +1,6 @@
 # FangYang · 技术手记
 
-简洁浅色的中文个人博客。支持 Markdown 文章、分类、标签、归档、全文搜索、深浅色主题、文章目录、代码复制和 RSS。
+参考 Tw93 风格的中文个人博客，采用米白底色、深棕横幅、单栏白色文章卡片和仓耳今楷字体。支持 Markdown 文章、分类、标签、归档、全文搜索、深浅色主题、文章目录、代码复制和 RSS。
 
 ## 本地使用
 
@@ -35,7 +35,7 @@ description: 一句话摘要。
 
 `tags` 用英文逗号分隔。设置 `featured: true` 可以置顶。示例文章带有 `demo: true`；替换成自己的内容后删除该字段。文件名使用小写英文字母、数字和连字符，作为文章地址。
 
-编辑 `site.config.json` 修改昵称、标题、简介、GitHub 链接、主题分类和站点地址。关于页文字在 `scripts/build.mjs` 中。
+编辑 `site.config.json` 修改昵称、标题、简介、首页寄语（motto）、GitHub 链接、主题分类和站点地址。关于页文字在 `scripts/build.mjs` 中。
 
 ## 发布到 GitHub Pages
 
@@ -56,4 +56,4 @@ description: 一句话摘要。
 - `.openai/hosting.json`：Sites 预览身份配置，GitHub Pages 不依赖它
 - `dist/`：构建输出，无需提交
 
-文章作为可信作者内容进行构建，请不要将未经审核的外部 Markdown 自动发布到本站。网页字体会优先请求 Google Fonts，无法加载时使用系统中文字体。
+文章作为可信作者内容进行构建，请不要将未经审核的外部 Markdown 自动发布到本站。网页字体采用与参考站相同的仓耳今楷 02，从公开 CDN 按需加载，无法加载时使用系统楷体。个人用途及字体来源见 FONT-NOTICE.md。
