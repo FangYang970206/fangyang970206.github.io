@@ -1,0 +1,25 @@
+const root = document.currentScript?.dataset.root || '';
+const dialog = document.querySelector('.search-dialog');
+const input = document.querySelector('#search-input');
+const results = document.querySelector('#search-results');
+const hint = document.querySelector('.search-hint');
+let indexPromise;
+const loadIndex = () => indexPromise ||= fetch(root+'search.json').then(r=>{if(!r.ok)throw new Error('Search index unavailable');return r.json();}).catch(err=>{indexPromise=null;throw err;});
+let queryVersion = 0;
+async function search(){const version=++queryVersion;const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();if(!q){hint.textContent='输入关键词，找回一段思考。';return;}hint.textContent='正在查找…';try{const posts=await loadIndex();if(version!==queryVersion)return;const terms=q.split(/\s+/);const found=posts.filter(p=>terms.every(t=>(p.title+' '+p.tags.join(' ')+' '+p.category+' '+p.text).toLocaleLowerCase().includes(t)));hint.textContent=found.length?`找到 ${found.length} 篇相关文章`:'没有找到相关文章，试试更短的关键词。';for(const p of found){const link=document.createElement('a');link.className='search-result';link.href=root+'posts/'+p.slug+'/index.html';const title=document.createElement('strong');title.textContent=p.title;const description=document.createElement('p');description.textContent=p.description;const meta=document.createElement('small');meta.textContent=p.date+' · '+p.category;link.append(title,description,meta);results.append(link);}}catch{if(version===queryVersion)hint.textContent='搜索暂时无法加载，请检查网络后重试，或前往文章列表浏览。';}}
+function openSearch(){if(!dialog.open){dialog.showModal();input.focus();search();}}
+document.querySelector('.search-open').addEventListener('click',openSearch);
+input.addEventListener('input',search);
+dialog.addEventListener('click',event=>{if(event.target===dialog){const box=dialog.getBoundingClientRect();if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)dialog.close();}});
+document.addEventListener('keydown',event=>{if(event.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!document.activeElement.isContentEditable&&!event.ctrlKey&&!event.metaKey&&!event.altKey){event.preventDefault();openSearch();}});
+document.querySelector('.theme-toggle').addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;try{localStorage.setItem('theme',theme);}catch{}});
+const filterButtons=[...document.querySelectorAll('[data-filter]')];
+function filter(category){filterButtons.forEach(button=>{const selected=button.dataset.filter===category;button.classList.toggle('active',selected);button.setAttribute('aria-pressed',String(selected));});let visible=0;document.querySelectorAll('.post-row').forEach(row=>{row.hidden=category!=='全部'&&row.dataset.category!==category;if(!row.hidden)visible++;});const empty=document.querySelector('.filter-empty');if(empty)empty.hidden=visible!==0;}
+filterButtons.forEach(button=>button.addEventListener('click',()=>{filter(button.dataset.filter);if(location.pathname.endsWith('/posts/index.html')||location.pathname.endsWith('/posts/')){const u=new URL(location.href);if(button.dataset.filter==='全部')u.searchParams.delete('category');else u.searchParams.set('category',button.dataset.filter);history.replaceState(null,'',u);}}));
+if(filterButtons.length){const initial=new URL(location.href).searchParams.get('category');filter(filterButtons.some(b=>b.dataset.filter===initial)?initial:'全部');}
+document.querySelectorAll('.prose pre').forEach(pre=>{const button=document.createElement('button');button.className='copy-code';button.textContent='复制代码';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.querySelector('code').textContent);button.textContent='已复制 ✓';setTimeout(()=>button.textContent='复制代码',1800);}catch{button.textContent='请选中代码复制';}});pre.append(button);});
+document.querySelector('.font-toggle')?.addEventListener('click',()=>document.querySelector('.article-prose').classList.toggle('large'));
+const progress=document.querySelector('.reading-progress');const backTop=document.querySelector('.back-top');
+function onScroll(){const max=document.documentElement.scrollHeight-innerHeight;progress.style.width=(max>0?scrollY/max*100:0)+'%';backTop.classList.toggle('visible',scrollY>500);}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();backTop.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));
+const tocLinks=[...document.querySelectorAll('.toc nav a')];if(tocLinks.length){const observer=new IntersectionObserver(entries=>{const current=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];if(current)tocLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current.target.id));},{rootMargin:'-110px 0px -60% 0px'});document.querySelectorAll('.article-prose h2,.article-prose h3').forEach(h=>observer.observe(h));}
