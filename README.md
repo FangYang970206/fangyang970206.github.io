@@ -39,11 +39,11 @@ description: 一句话摘要。
 
 ## 源码与发布
 
-源码保存在私有仓库 `FangYang970206/fangyang970206.github.io`。当前网站通过 Sites 部署，沿用仅所有者可访问的权限。
+源码保存在公开仓库 `FangYang970206/fangyang970206.github.io`。网站通过 GitHub Pages 发布，正式地址为 https://fangyang970206.github.io/ 。
 
-提交到 `main` 后，GitHub Actions 会安装依赖、构建并检查站内链接。当前账户方案不支持从此私有仓库启用 GitHub Pages，因此默认不运行 Pages 部署。
+提交到 `main` 后，GitHub Actions 自动安装依赖、构建、检查站内链接并部署。仓库 Settings → Pages 的 Source 应设为 GitHub Actions。也可以在 Actions 页面手动运行 Publish blog to GitHub Pages 工作流。
 
-如以后具备私有仓库的 Pages 权限，可先在仓库 Settings → Pages 中启用 GitHub Actions，再手动运行工作流并勾选 `deploy_pages`。部署成功后同步更新 `site.config.json` 中的 `url`。
+站点地址由 `site.config.json` 中的 `url` 配置；GitHub Actions 构建时使用 Pages 返回的域名和路径，保证文章规范地址、RSS 与站点地图一致。
 
 ## 当前文章
 
@@ -54,7 +54,7 @@ description: 一句话摘要。
 - `content/posts/`：Markdown 原文
 - `public/`：样式、交互和图标
 - `scripts/build.mjs`：生成文章、列表、标签、RSS、站点地图及搜索索引
-- `.github/workflows/pages.yml`：内容检查及可选的 Pages 手动部署
+- `.github/workflows/pages.yml`：构建检查与 Pages 自动部署
 - `.openai/hosting.json`：Sites 预览身份配置，GitHub Pages 不依赖它
 - `dist/`：构建输出，无需提交
 
